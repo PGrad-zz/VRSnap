@@ -1,0 +1,124 @@
+fileFormatVersion: 2
+guid: 4ae495384271341c6bd6efaeefcc9c55
+timeCreated: 1467156258
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Body_jeep_us
+    100002: grill
+    100004: jeep01
+    100006: //RootNode
+    100008: tyre_front02
+    100010: tyre_front02_pivot
+    100012: tyre_front1
+    100014: tyre_front1_pivot
+    100016: tyre_rear02
+    100018: tyre_rear02_pivot
+    100020: tyre_rear1
+    100022: tyre_rear1_pivot
+    100024: wing
+    100026: wing01
+    400000: Body_jeep_us
+    400002: grill
+    400004: jeep01
+    400006: //RootNode
+    400008: tyre_front02
+    400010: tyre_front02_pivot
+    400012: tyre_front1
+    400014: tyre_front1_pivot
+    400016: tyre_rear02
+    400018: tyre_rear02_pivot
+    400020: tyre_rear1
+    400022: tyre_rear1_pivot
+    400024: wing
+    400026: wing01
+    2300000: Body_jeep_us
+    2300002: grill
+    2300004: tyre_front02_pivot
+    2300006: tyre_front1_pivot
+    2300008: tyre_rear02_pivot
+    2300010: tyre_rear1_pivot
+    2300012: wing
+    2300014: wing01
+    3300000: Body_jeep_us
+    3300002: grill
+    3300004: tyre_front02_pivot
+    3300006: tyre_front1_pivot
+    3300008: tyre_rear02_pivot
+    3300010: tyre_rear1_pivot
+    3300012: wing
+    3300014: wing01
+    4300000: Body_jeep_us
+    4300002: wing
+    4300004: wing01
+    4300006: grill
+    4300008: tyre_rear1_pivot
+    4300010: tyre_rear02_pivot
+    4300012: tyre_front1_pivot
+    4300014: tyre_front02_pivot
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

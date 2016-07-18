@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 23249406eab754d2a88fbbb9d29b8d5a
+timeCreated: 1467518208
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - button: {instanceID: 0}
+  - newJungle: {fileID: 116716, guid: cff28dc8877334821a3990e46115c9ec, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
