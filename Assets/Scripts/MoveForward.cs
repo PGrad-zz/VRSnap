@@ -8,12 +8,14 @@ public class MoveForward : MonoBehaviour, Mover {
 	private bool moving = false;
 	private Vector3 terrainBounds;
 	private Animator animator;
+	private AudioSource sound;
 	private float upperZlimit;
 	void Awake () {
 		terrainBounds = GameObject.FindGameObjectWithTag("Level").GetComponent<Terrain> ().terrainData.size;
 		terrainBounds.x /= 2;
 		upperZlimit = terrainBounds.z + 100;
 		animator = GetComponent <Animator> ();
+		sound = GetComponent <AudioSource> ();
 		if (animator != null)
 			animator.enabled = false;
 	}
@@ -35,6 +37,8 @@ public class MoveForward : MonoBehaviour, Mover {
 		moving = true;
 		if (animator != null)
 			animator.enabled = true;
+		if (sound != null)
+			sound.Play ();
 	}
 
 	public void stopMoving () {

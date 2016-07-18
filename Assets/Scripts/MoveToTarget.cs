@@ -8,11 +8,13 @@ public class MoveToTarget : MonoBehaviour, Mover {
 	private bool stopped = false;
 	private Vector3 terrainBounds;
 	private Animator animator;
+	private AudioSource sound;
 
 	// Use this for initialization
 	void Awake () {
 		nvAgent = GetComponent<NavMeshAgent> ();
 		animator = GetComponent <Animator> ();
+		sound = GetComponent <AudioSource> ();
 		if (animator != null)
 			animator.enabled = false;
 	}
@@ -40,6 +42,8 @@ public class MoveToTarget : MonoBehaviour, Mover {
 		moving = true;
 		if (animator != null)
 			animator.enabled = true;
+		if (sound != null)
+			sound.Play ();
 	}
 
 	public void stopMoving () {
