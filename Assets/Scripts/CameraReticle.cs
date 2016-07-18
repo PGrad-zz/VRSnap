@@ -43,7 +43,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 					 focusComp;
 	private GameObject targetObj,
 					   headCanvas,
-					   pointsPanel;
+					   pointsPanel,
+					   pictureFrame;
 	private AudioSource snapshot,
 						focusSound;
 	private Transform headTransform;
@@ -104,6 +105,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		headCanvas = GameObject.Find("HeadCanvas");
 
 		pointsPanel = headCanvas.transform.GetChild (1).gameObject;
+
+		pictureFrame = GameObject.Find ("Frame");
 	}
 
 	void OnEnable() {
@@ -210,29 +213,33 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		// Put your reticle trigger end logic here :)
 		//Check to make sure targetObj still exists
 		isInteractiveAndIsNotNull &= targetObj != null;
-		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 1.3f) {
+		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.6f) {
 			ClearScreen ();
 			snapshot.Play ();
 			cameraShot.TakeCameraShot (materialComp.GetFloat ("_OuterDiameter") - materialComp.GetFloat ("_InnerDiameter"));
 			ScoreManager.changeScore (scanWithinReticle ());
 		} 
-		zoomIn = false;
 		StartCoroutine (resizeDown ());
-		RestoreScreen ();
 	}
 
 	private void ClearScreen () {
 		headCanvas.SetActive (false);
 		pointsPanel.SetActive (false);
+		pictureFrame.SetActive (false);
 	}
 
 	private void RestoreScreen () {
 		headCanvas.SetActive (true);
+		pictureFrame.SetActive (true);
 	}
 
 	private IEnumerator resizeDown() {
+		zoomIn = false;
+		shotsEnabled = false;
 		yield return new WaitForSeconds (0.25f);
 		kReticleGrowthAngle = 1.5f;
+		RestoreScreen ();
+		shotsEnabled = true;
 	}
 
 	public void GetPointerRadius(out float innerRadius, out float outerRadius) {
