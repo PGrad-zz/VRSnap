@@ -5,14 +5,14 @@ public class Jump : MonoBehaviour {
 	private Rigidbody rb;
 	private bool jumped = false;
 	private float initY;
-	private Collider collider;
+	private Collider mCollider;
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
 		initY = transform.position.y;
 		EventManager.RegisterGameobject (gameObject, catchIt);
-		collider = gameObject.GetComponent<MeshCollider> ();
-		collider.enabled = false;
+		mCollider = gameObject.GetComponent<MeshCollider> ();
+		mCollider.enabled = false;
 	}
 
 	public void OnTriggerEnter (Collider other) {
@@ -25,7 +25,7 @@ public class Jump : MonoBehaviour {
 	private void jumpIn () {
 		gameObject.GetComponent<MeshCollider> ().enabled = true;
 		gameObject.GetComponent<Rigidbody> ().useGravity = true;
-		rb.AddForce (Vector3.right * 325 + Vector3.up * 100 + Vector3.forward * -550);
+		rb.AddForce (Vector3.right * 300 + Vector3.up * 100 + Vector3.forward * -500);
 		jumped = true;
 		StartCoroutine (croak ());
 	}
@@ -38,7 +38,7 @@ public class Jump : MonoBehaviour {
 	}
 
 	private void jumpOut () {
-		rb.AddForce (Vector3.right * 300 + Vector3.up * 300 + Vector3.forward * -1000);
+		rb.AddForce (Vector3.up * 300 + Vector3.right * 1000);
 		GetComponents<AudioSource> () [1].Play ();
 	}
 

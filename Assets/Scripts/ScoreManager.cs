@@ -21,7 +21,6 @@ public class ScoreManager : Singleton<ScoreManager> {
 	private Vector3 scoreRotation;
 	private int multiplier = 1,
 				picScore = 0,
-				scoreToGetRoll = 10,
 				rollCost = 20;
 	private Queue<HashSet<GameObject>> lastFivePics;
 	protected ScoreManager() {}
