@@ -213,7 +213,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		// Put your reticle trigger end logic here :)
 		//Check to make sure targetObj still exists
 		isInteractiveAndIsNotNull &= targetObj != null;
-		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.6f) {
+		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.3f) {
 			ClearScreen ();
 			snapshot.Play ();
 			cameraShot.TakeCameraShot (materialComp.GetFloat ("_OuterDiameter") - materialComp.GetFloat ("_InnerDiameter"));
