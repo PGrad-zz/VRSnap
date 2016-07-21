@@ -18,8 +18,7 @@ public class ButtonManager : MonoBehaviour {
 		Destroy (button);
 		CameraReticle.shotsEnabled = true;
 		GameObject.Find ("CameraReticle").GetComponent<CameraReticle> ().OnGazeExit (null, null);
-		EventManager.TriggerEvent ("StartPlayerMove");
-		EventManager.TriggerEvent ("Move");
+		EventManager.TriggerEvent ("Start");
 	}
 
 	public void killFog () {

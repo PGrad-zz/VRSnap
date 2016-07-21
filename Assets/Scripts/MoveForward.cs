@@ -5,11 +5,13 @@ using System.Collections;
 public class MoveForward : MonoBehaviour, Mover {
 	public float speed;
 	private Vector3 motion;
-	private bool moving = false;
+	private bool moving = false,
+				 soundPaused = false;
 	private Vector3 terrainBounds;
 	private Animator animator;
 	private AudioSource sound;
 	private float upperZlimit;
+
 	void Awake () {
 		terrainBounds = GameObject.FindGameObjectWithTag("Level").GetComponent<Terrain> ().terrainData.size;
 		terrainBounds.x /= 2;
@@ -21,6 +23,7 @@ public class MoveForward : MonoBehaviour, Mover {
 	}
 
 	void Start() {
+		EventManager.RegisterEvent ("Start", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 	}
@@ -33,7 +36,7 @@ public class MoveForward : MonoBehaviour, Mover {
 		}
 	}
 
-	public void getMoving () {
+	public void startMoving () {
 		moving = true;
 		if (animator != null)
 			animator.enabled = true;
@@ -41,9 +44,23 @@ public class MoveForward : MonoBehaviour, Mover {
 			sound.Play ();
 	}
 
+	public void getMoving () {
+		moving = true;
+		if (animator != null)
+			animator.enabled = true;
+		if (sound != null && soundPaused) {
+			sound.Play ();
+			soundPaused = false;
+		}
+	}
+
 	public void stopMoving () {
 		moving = false;
 		if (animator != null)
 			animator.enabled = false;
+		if (sound != null && sound.isPlaying) {
+			sound.Pause ();
+			soundPaused = true;
+		}
 	}
 }

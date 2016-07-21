@@ -3,9 +3,10 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class Family : MonoBehaviour {
+public class Family : SpecialMoment {
 	private HashSet <GameObject> countMembers;
 	private bool open = true;
+
 	void Awake () {
 		GameObject go;
 		countMembers = new HashSet<GameObject> ();
@@ -14,6 +15,7 @@ public class Family : MonoBehaviour {
 			if (EventManager.isPhotogenic (go) && !countMembers.Contains(go)) 
 				countMembers.Add (go);
 		}
+		base.ShowSpecial ();
 	}
 
 	void Update () {

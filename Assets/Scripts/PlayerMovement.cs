@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour, Mover {
 	// Use this for initialization
 	void Start () {
 		nvAgent = GetComponent<NavMeshAgent> ();
-		EventManager.RegisterEvent ("StartPlayerMove", startMoving);
+		EventManager.RegisterEvent ("Start", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 	}

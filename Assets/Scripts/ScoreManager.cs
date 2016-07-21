@@ -42,7 +42,7 @@ public class ScoreManager : Singleton<ScoreManager> {
 			Instance.rolls++;
 			Instance.score -= Instance.rollCost;
 		}
-		ShowNewScore ();
+		RefreshHUD ();
 	}
 
 	public static void AddPoints(int hits) {
@@ -60,9 +60,8 @@ public class ScoreManager : Singleton<ScoreManager> {
 
 	private static void RemoveRoll() {
 		Instance.rollText.text = string.Format ("x{0}", (--Instance.rolls).ToString ());
-		if (Instance.rolls < 1) {
+		if (Instance.rolls < 1) 
 			Instance.StartCoroutine (Instance.WaitForShotThenEndGame (false));
-		}
 	}
 
 	public static void LoseAtEnd () {
@@ -103,9 +102,11 @@ public class ScoreManager : Singleton<ScoreManager> {
 		Instance.scoreTransform.rotation = Quaternion.Euler (Instance.scoreTransform.right * -0.05f * (Instance.score - oldScore) ) * Instance.scoreTransform.rotation;
 		if (Instance.score >= Instance.maxScore)
 			Instance.StartCoroutine (Instance.WaitForShotThenEndGame (true));
+		else
+			RemoveRoll ();
 	}
 
-	public static void ShowNewScore () {
+	public static void RefreshHUD () {
 		Instance.rollText.text = string.Format ("x{0}", Instance.rolls.ToString());
 		Instance.scoreText.text = string.Format ("{0}/{1}", Instance.score.ToString(), Instance.maxScore);
 		Instance.StartCoroutine (ShowImmediateScore (Instance.picScore));
@@ -150,13 +151,9 @@ public class ScoreManager : Singleton<ScoreManager> {
 			}
 		}
 		ApplyMultiplier ();
-		//if (Instance.picScore >= Instance.scoreToGetRoll && notOld) 
-			//AddBonusRoll ();
-		//else
-		RemoveRoll ();
 		if (Instance.lastFivePics.Count >= 5) 
 			Instance.lastFivePics.Dequeue ();
 		CumulateScore (oldScore);
-		ShowNewScore ();
+		RefreshHUD ();
 	}
 }

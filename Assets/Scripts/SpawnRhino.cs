@@ -22,6 +22,10 @@ public class SpawnRhino : MonoBehaviour, Mover {
 		}
 	}
 		
+	public void startMoving () {
+		getMoving ();
+	}
+
 	public void getMoving () {
 		if (triggered)
 			moving = true;

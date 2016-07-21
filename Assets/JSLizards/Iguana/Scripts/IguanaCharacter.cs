@@ -8,6 +8,7 @@ public class IguanaCharacter : MonoBehaviour, Mover {
 
 	void Start () {
 		iguanaAnimator = GetComponent<Animator> ();
+		EventManager.RegisterEvent ("Start", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 		EventManager.RegisterGameobject (gameObject, multiplyOnAttack);
@@ -59,6 +60,10 @@ public class IguanaCharacter : MonoBehaviour, Mover {
 		iguanaAnimator.SetFloat ("Turn", h);
 	}
 
+	public void startMoving () {
+		getMoving ();
+	}
+	
 	public void getMoving () {
 		moving = true;
 	}

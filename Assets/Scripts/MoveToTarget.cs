@@ -3,9 +3,10 @@ using System.Collections;
 
 public class MoveToTarget : MonoBehaviour, Mover {
 	public GameObject target;
-	private bool moving = false;
+	private bool moving = false,
+				 stopped = false,
+				 soundPaused = false;
 	private NavMeshAgent nvAgent;
-	private bool stopped = false;
 	private Vector3 terrainBounds;
 	private Animator animator;
 	private AudioSource sound;
@@ -20,6 +21,7 @@ public class MoveToTarget : MonoBehaviour, Mover {
 	}
 
 	void Start () {
+		EventManager.RegisterEvent ("Start", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 		terrainBounds = GameObject.FindGameObjectWithTag ("Level").GetComponent<Terrain> ().terrainData.size;
@@ -36,14 +38,24 @@ public class MoveToTarget : MonoBehaviour, Mover {
 		}
 	}
 
+	public void startMoving () {
+		moving = true;
+		if (animator != null)
+			animator.enabled = true;
+		if (sound != null)
+			sound.Play ();
+	}
+
 	public void getMoving () {
 		if(stopped)
 			nvAgent.Resume ();
 		moving = true;
 		if (animator != null)
 			animator.enabled = true;
-		if (sound != null)
+		if (sound != null && soundPaused) {
 			sound.Play ();
+			soundPaused = false;
+		}
 	}
 
 	public void stopMoving () {
@@ -52,5 +64,9 @@ public class MoveToTarget : MonoBehaviour, Mover {
 		stopped = true;
 		if (animator != null)
 			animator.enabled = false;
+		if (sound != null && sound.isPlaying) {
+			sound.Pause ();
+			soundPaused = true;
+		}
 	}
 }
