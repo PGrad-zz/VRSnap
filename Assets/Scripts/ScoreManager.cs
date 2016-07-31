@@ -20,13 +20,14 @@ public class ScoreManager : Singleton<ScoreManager> {
 	private Transform scoreTransform;
 	private Vector3 scoreRotation;
 	private int multiplier = 1,
+				oldMultiplier = 1,
 				picScore = 0,
+				picScoreWOMultiplier = 0,
 				rollCost = 20;
-	private Queue<HashSet<GameObject>> lastFivePics;
+
 	protected ScoreManager() {}
 
 	void Start() {
-		lastFivePics = new Queue<HashSet<GameObject>> ();
 		scoreText.text = string.Format ("{0}/{1}", 0, Instance.maxScore);
 		rollText.text = string.Format("x{0}",rolls.ToString());
 		immediateScoreText = immediateScorePanel.GetComponent <Text> ();
@@ -54,6 +55,8 @@ public class ScoreManager : Singleton<ScoreManager> {
 	}
 
 	private static void ApplyMultiplier () {
+		Instance.picScoreWOMultiplier = Instance.picScore;
+		Instance.oldMultiplier = Instance.multiplier;
 		Instance.picScore *= Instance.multiplier;
 		Instance.multiplier = 1;
 	}
@@ -115,44 +118,27 @@ public class ScoreManager : Singleton<ScoreManager> {
 
 	private static IEnumerator ShowImmediateScore (int picScore) {
 		yield return new WaitForSeconds (0.25f);
-		Instance.immediateScoreText.text = string.Format ("+{0,3}", picScore);
+		Instance.immediateScoreText.text = string.Format ("+{0,2} x {1}", Instance.picScoreWOMultiplier, Instance.oldMultiplier);
 		Instance.immediateScorePanel.SetActive (true);
 		yield return new WaitForSeconds (1.0f);
 		Instance.immediateScorePanel.SetActive (false);
 	}
 		
-	public static bool CanGetBonus (HashSet<GameObject> newPicSet) {
-		foreach (var pic in Instance.lastFivePics) {
-			if (pic.SetEquals (newPicSet))
-				return false;
-		}
-		return true;
+	public static bool CanGetBonus (GameObject go) {
+		return CameraReticle.mapGOtoFacing [go] && !EventManager.HasBeenInvoked (go);
 	}
 
 	public static void changeScore(HashSet<GameObject> hits) {
 		int oldScore = Instance.score,
 			objScore = 0;
-		bool notOld = CanGetBonus (hits);
-		if (notOld) {
-			foreach (GameObject go in hits) {
-				Debug.Log (go.name);
-				if (!DataService.getScore (go, out objScore))
-					throw new UnityException ("Object not registered with database, cannot get score!");
-				AddPoints (objScore);
-				if (CameraReticle.mapGOtoFacing[go])
-					EventManager.TriggerGameobject (go);
-			}
-			Instance.lastFivePics.Enqueue (hits);
-		} else {
-			foreach (GameObject go in hits) {
-				if (!DataService.getScore (go, out objScore))
-					throw new UnityException ("Object not registered with database, cannot get score!");
-				AddPoints (objScore);
-			}
+		foreach (GameObject go in hits) {
+			if (!DataService.getScore (go, out objScore))
+				throw new UnityException ("Object not registered with database, cannot get score!");
+			AddPoints (objScore);
+			if (CanGetBonus (go)) 
+				EventManager.TriggerGameobject (go);
 		}
 		ApplyMultiplier ();
-		if (Instance.lastFivePics.Count >= 5) 
-			Instance.lastFivePics.Dequeue ();
 		CumulateScore (oldScore);
 		RefreshHUD ();
 	}

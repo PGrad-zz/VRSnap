@@ -9,11 +9,8 @@ public class PauseOnTilt : Singleton <PauseOnTilt> {
 	private bool tilted = false,
 				 paused = false;
 	private float cosOfplayerHeadZAngle;
-	private GameObject jeep;
 
 	void Start () {
-		jeep = GameObject.Find ("jeepus");
-		transform.forward = jeep.transform.forward;
 		startButton = GameObject.Find ("StartButton");
 	}
 
@@ -42,6 +39,7 @@ public class PauseOnTilt : Singleton <PauseOnTilt> {
 		Instance.PausePanel.SetActive (true);
 		if (Instance.startButton != null)
 			Instance.startButton.SetActive (false);
+		EventManager.TriggerEvent ("Pause");
 		Instance.paused = true;
 	}
 
@@ -51,6 +49,7 @@ public class PauseOnTilt : Singleton <PauseOnTilt> {
 			Instance.startButton.SetActive (true);
 		else
 			ScoreManager.ResumeGame ();
+		EventManager.TriggerEvent ("Resume");
 		Instance.paused = false;
 	}
 }
