@@ -61,8 +61,10 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 		}
 	}
 
+	//Prevents singleton from being destroyed on the loading of a new level.
 	public void OnLevelWasLoaded (int level) {
 		applicationIsQuitting = false;
+		Debug.Log (gameObject.name);
 	}
 
 	private static bool applicationIsQuitting = false;

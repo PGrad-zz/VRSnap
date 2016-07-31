@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 
-public class MoveForward : MonoBehaviour, Mover {
+public class MoveForward : MonoBehaviour, IMover {
 	public float speed;
 	private Vector3 motion;
 	private bool moving = false,

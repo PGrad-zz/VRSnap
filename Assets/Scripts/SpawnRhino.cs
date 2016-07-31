@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpawnRhino : MonoBehaviour, Mover {
+public class SpawnRhino : MonoBehaviour, IMover {
 	public GameObject rhino;
 	public float maxPlayerSpeed = 10;
 	private NavMeshAgent rhinoNvAgent;

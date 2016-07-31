@@ -104,9 +104,10 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 
 		headCanvas = GameObject.Find("HeadCanvas");
 
-		pointsPanel = headCanvas.transform.GetChild (1).gameObject;
-
-		pictureFrame = GameObject.Find ("Frame");
+		if (headCanvas != null) {
+			pictureFrame = headCanvas.transform.GetChild (0).gameObject;
+			pointsPanel = headCanvas.transform.GetChild (1).gameObject;
+		}
 	}
 
 	void OnEnable() {
@@ -147,7 +148,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 			Collider targetCollider = targetObject.GetComponent<Collider> ();
 			colliderMultiplier = (int) (targetCollider.bounds.size.y * targetCollider.transform.localScale.y);
 		}*/
-		SetGazeTarget(intersectionPosition, isInteractiveAndIsNotNull);
+		SetGazeTarget(intersectionPosition, EventManager.isPhotogenic (targetObj));
 	}
 
 	/// Called every frame the user is still looking at a valid GameObject. This
@@ -181,8 +182,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public void OnGazeTriggerStart(Camera camera) {
 		// Put your reticle trigger start logic here :)
 		//Check to make sure targetObj still exists
-		isInteractiveAndIsNotNull &= targetObj != null;
-		if(isInteractiveAndIsNotNull && targetObj.name != "Text") {
+		if(EventManager.isPhotogenic (targetObj)) {
 			if (targetObj.name == "Gelios_high") {
 				canZoom = true;
 				Debug.Log ("zoom!");
@@ -212,8 +212,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public void OnGazeTriggerEnd(Camera camera) {
 		// Put your reticle trigger end logic here :)
 		//Check to make sure targetObj still exists
-		isInteractiveAndIsNotNull &= targetObj != null;
-		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.3f) {
+		//isInteractiveAndIsNotNull &= targetObj != null;
+		if (shotsEnabled && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.3f) {
 			ClearScreen ();
 			snapshot.Play ();
 			cameraShot.TakeCameraShot (materialComp.GetFloat ("_OuterDiameter") - materialComp.GetFloat ("_InnerDiameter"));
@@ -223,14 +223,20 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	}
 
 	private void ClearScreen () {
-		headCanvas.SetActive (false);
-		pointsPanel.SetActive (false);
-		pictureFrame.SetActive (false);
+		EventManager.TriggerEvent ("Pause");
+		if (headCanvas != null) {
+			headCanvas.SetActive (false);
+			pointsPanel.SetActive (false);
+			pictureFrame.SetActive (false);
+		}
 	}
 
 	private void RestoreScreen () {
-		headCanvas.SetActive (true);
-		pictureFrame.SetActive (true);
+		if (headCanvas != null) {
+			headCanvas.SetActive (true);
+			pictureFrame.SetActive (true);
+		}
+		EventManager.TriggerEvent ("Resume");
 	}
 
 	private IEnumerator resizeDown() {
@@ -376,7 +382,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 				direction = forward;
 		int zSteps = Mathf.FloorToInt (360f / inverseResolution),
 			ySteps = 50;
-		Quaternion yRotation = Quaternion.Euler(up * (reticleInnerAngle / 75)),
+		Quaternion yRotation = Quaternion.Euler(up * (reticleInnerAngle / 70)),
 		zRotation = Quaternion.Euler(forward * inverseResolution);
 		for(int z = 0; z < ySteps; z++) {
 			direction = yRotation * direction;

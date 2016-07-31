@@ -1,20 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IguanaCharacter : MonoBehaviour, Mover {
+public class IguanaCharacter : SpecialMoment, IMover {
 	Animator iguanaAnimator;
 	private bool moving = false,
 				 attacking = false;
 
+	void Awake () {
+		specialIconMaterial = (Material) Resources.Load ("SpecialIconMaterial/TimeMaterial");
+	}
+
 	void Start () {
+		base.RegisterAndScale ();
 		iguanaAnimator = GetComponent<Animator> ();
 		EventManager.RegisterEvent ("Start", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
-		EventManager.RegisterGameobject (gameObject, multiplyOnAttack);
+		EventManager.RegisterGameObject (gameObject, multiplyOnAttack);
 	}
+		
 
-	void Update () {
+	protected override void Update () {
+		base.Update ();
 		if (moving)
 			Move (1f, 0f);
 		else
@@ -26,9 +33,11 @@ public class IguanaCharacter : MonoBehaviour, Mover {
 	private IEnumerator Attacking () {
 		yield return new WaitForSeconds (3f);
 		attacking = false;
+		HideSpecial ();
 	}
 
-	public void Attack(){
+	public void Attack() {
+		ShowSpecial ();
 		attacking = true;
 		iguanaAnimator.SetTrigger("Attack");
 		StartCoroutine (Attacking ());
@@ -39,8 +48,10 @@ public class IguanaCharacter : MonoBehaviour, Mover {
 	}
 
 	public void multiplyOnAttack () {
-		if (attacking)
+		if (attacking) {
 			ScoreManager.MultiplyScore (2);
+			SpecialIsInvoked ();
+		}
 	}
 	
 	/*public void Eat(){

@@ -8,13 +8,15 @@ using System.Collections.Generic;
 public class EventManager : Singleton <EventManager> {
 	private Dictionary <GameObject, UnityEvent> objToEvent;
 	private Dictionary <string, UnityEvent> strToEvent;
+	private HashSet <GameObject> objsBeenInvoked;
 
 	void Awake () {
 		objToEvent = new Dictionary<GameObject, UnityEvent> ();
 		strToEvent = new Dictionary<string, UnityEvent> ();
+		objsBeenInvoked = new HashSet<GameObject> ();
 	}
 
-	public static void RegisterGameobject (GameObject obj, UnityAction listener) {
+	public static void RegisterGameObject (GameObject obj, UnityAction listener) {
 		if (isPhotogenic (obj)) {
 			UnityEvent thisEvent = null;
 			if (Instance.objToEvent.TryGetValue (obj, out thisEvent))
@@ -62,6 +64,14 @@ public class EventManager : Singleton <EventManager> {
 		UnityEvent thisEvent = null;
 		if (Instance.strToEvent.TryGetValue (eventName, out thisEvent))
 			thisEvent.Invoke ();
+	}
+
+	public static bool HasBeenInvoked (GameObject go) {
+		return Instance.objsBeenInvoked.Contains (go);
+	}
+
+	public static void NowInvoked (GameObject go) {
+		Instance.objsBeenInvoked.Add (go);
 	}
 
 	public static bool isPhotogenic (GameObject go) {

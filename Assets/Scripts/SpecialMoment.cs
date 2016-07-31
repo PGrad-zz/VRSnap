@@ -1,28 +1,59 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpecialMoment : MonoBehaviour {
-	public Material specialIconMaterial;
-	public float iconAbove,
-				 scaler;
-	private GameObject specialCopy = null;
-	private bool showing = false;
+public abstract class SpecialMoment : MonoBehaviour, ISpecialInvoked {
+	private float scaler,
+				  iconAbove;
+	protected Material specialIconMaterial;
+	protected GameObject specialCopy = null;
+	protected bool showing,
+				   specialInvoked;
 
-	void Update () {
-		if (showing)
-			SpecialIndicatorProvider.faceIconToPlayer (specialCopy.transform);
+	protected void RegisterAndScale () {
+		Vector3 colliderDims = GetComponent<Family> () == null ? GetComponent<Collider> ().bounds.size : GetComponentInChildren<Collider> ().bounds.size;
+		EventManager.RegisterEvent ("Resume", ResumeSpecial);
+		EventManager.RegisterEvent ("Pause", PauseSpecial);
+		showing = false;
+		specialInvoked = false;
+		scaler = colliderDims.x * 1.5f;
+		iconAbove = colliderDims.y;
 	}
 
-	protected virtual void ShowSpecial () {
-		if (specialCopy != null)
+	protected virtual void Update () {
+		if (showing) 
+			SpecialIndicatorProvider.faceIconToPlayer (specialCopy);
+	}
+
+	void PauseSpecial () {
+		if (showing) 
+			specialCopy.SetActive (false);
+	}
+
+	void ResumeSpecial () {
+		if (showing)
 			specialCopy.SetActive (true);
+	}
+
+	protected void ShowSpecial () {
+		if (specialCopy != null)
+			specialCopy.SetActive (!specialInvoked);
 		else 
 			specialCopy = SpecialIndicatorProvider.getSpecialCopy (transform, specialIconMaterial, iconAbove, scaler);
-		showing = true;
+		showing = !specialInvoked;
 	}
 
-	protected virtual void HideSpecial () {
+	protected void HideSpecial () {
 		showing = false;
 		specialCopy.SetActive (false);
+	}
+
+	public virtual void SpecialIsInvoked () {
+		specialInvoked = true;
+		HideSpecial ();
+		EventManager.NowInvoked (gameObject);
+	}
+
+	protected void SetSpecialIconMaterial (Material mat) {
+		specialIconMaterial = mat;
 	}
 }
