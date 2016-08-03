@@ -10,15 +10,17 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 					  HUDPanel;
 	private bool gazeEnteredOnce = false,
 				 tookFirstShot = false,
-				 familyCreated = false;
+			     took2ndShot = false;
 	private Animator anim;
 	private GameObject parent;
 	private GameObject[] siblings;
 	private Graphic[] HUDgraphics;
+	private AudioSource hey;
 
 	void Awake () {
 		anim = GetComponent<Animator> ();
 		siblings = new GameObject[2];
+		hey = GetComponent<AudioSource> ();
 	}
 
 	void Start () {
@@ -38,25 +40,28 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 			graphic.CrossFadeAlpha (0.1f, 0f, true);
 			graphic.CrossFadeAlpha (1f, 1f, true);
 		}
+		CameraReticle.shotsEnabled = true;
 	}
 
 	public void OnGazeEnter () {
 		if (!gazeEnteredOnce) {
 			StartCoroutine (ChangeHUDColors (false));
 			gazeEnteredOnce = true;
+			hey.Play ();
 		}
 	}
 
 	private IEnumerator ChangeHUDColors (bool waitForShot) {
 		if (waitForShot) {
 			yield return new WaitForSeconds (2);
+			CameraReticle.shotsEnabled = false;
 			pointToFrame.CrossFadeAlpha (255f, 1f, true);
 			yield return new WaitForSeconds (3);
 			pointToFrame.CrossFadeAlpha (1f, 1f, true);
 			yield return new WaitForSeconds (1);
-			CameraReticle.shotsEnabled = false;
 			Destroy (pointToFrame.gameObject);
-			SpawnSiblings ();
+			fadeInHUDPanel ();
+			hey.Play ();
 		} else {
 			yield return new WaitForSeconds (1);
 			howToImage.CrossFadeAlpha (255f, 1f, true);
@@ -78,7 +83,11 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 				Destroy (howToImage.gameObject);
 				anim.SetTrigger ("Success");
 				StartCoroutine (ChangeHUDColors (true));
-			} else if (familyCreated) {
+			} else if (!took2ndShot) {
+				took2ndShot = true;
+				anim.SetTrigger ("Success");
+				StartCoroutine (SpawnSiblings ());
+			} else {
 				anim.SetTrigger ("Success");
 				foreach (GameObject sibling in siblings)
 					sibling.GetComponent<Animator> ().SetTrigger ("Success");
@@ -86,7 +95,8 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 		}
 	}
 
-	private void SpawnSiblings () {
+	private IEnumerator SpawnSiblings () {
+		yield return new WaitForSeconds (2);
 		Vector3 xShift = new Vector3 (2, 0, 0);
 		Quaternion turnAround = Quaternion.Euler (new Vector3 (0, 180f, 0));
 		parent = Instantiate (new GameObject (), transform.position, transform.rotation) as GameObject;
@@ -102,7 +112,6 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 		}
 		parent.AddComponent <Family> ();
 		CameraReticle.shotsEnabled = true;
-		fadeInHUDPanel ();
-		familyCreated = true;
+		hey.Play ();
 	}
 }

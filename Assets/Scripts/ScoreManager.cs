@@ -105,7 +105,8 @@ public class ScoreManager : Singleton<ScoreManager> {
 	}
 		
 	public static bool CanGetBonus (GameObject go) {
-		return CameraReticle.mapGOtoFacing [go] && !EventManager.HasBeenInvoked (go);
+		return !EventManager.HasBeenInvoked (go);
+		//CameraReticle.mapGOtoFacing [go] && 
 	}
 
 	public static void changeScore(HashSet<GameObject> hits) {

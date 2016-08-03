@@ -174,17 +174,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		// Put your reticle trigger start logic here :)
 		//Check to make sure targetObj still exists
 		if(EventManager.isPhotogenic (targetObj)) {
-			if (targetObj.name == "Gelios_high") {
-				canZoom = true;
-				Debug.Log ("zoom!");
-			} else {
-				kReticleGrowthAngle = kReticleGrowthAngle * 10f/*** colliderMultiplier*/;
-				focusSound.Play ();
-				if (canZoom) {
-					zoomIn = true;
-					StartCoroutine (zoom (camera.GetComponentsInChildren<Camera> ()));
-				}
-			}
+			kReticleGrowthAngle = kReticleGrowthAngle * 10f/*** colliderMultiplier*/;
+			focusSound.Play ();
 		}
 	}
 
@@ -228,6 +219,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 			pictureFrame.SetActive (true);
 		}
 		EventManager.TriggerEvent ("Resume");
+		if (GameStartManager.isGameStarted ())
+			CameraReticle.shotsEnabled = true;
 	}
 
 	private IEnumerator resizeDown() {
@@ -236,7 +229,6 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		yield return new WaitForSeconds (0.25f);
 		kReticleGrowthAngle = 1.5f;
 		RestoreScreen ();
-		shotsEnabled = true;
 	}
 
 	public void GetPointerRadius(out float innerRadius, out float outerRadius) {
