@@ -18,9 +18,9 @@ public class Jump : SpecialMoment {
 
 	public void OnTriggerEnter (Collider other) {
 		if (!jumped && other.name == "Player") {
+			ShowSpecial ();
 			transform.parent = other.transform;
 			jumpIn ();
-			ShowSpecial ();
 		}
 	}
 

@@ -2,7 +2,8 @@
 using System.Collections;
 
 public class FamilySentinel : MonoBehaviour, ISpecialInvoked {
-	public bool notSearched = true;
+	public bool notSearched = true,
+				lead = false;
 	void Start () {
 		EventManager.RegisterGameObject (gameObject, Alert);
 	}

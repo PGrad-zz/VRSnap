@@ -11,7 +11,8 @@ public class SpecialIndicatorProvider : Singleton <SpecialIndicatorProvider> {
 
 	public static GameObject getSpecialCopy (Transform goTransform, Material specialIconMat, float iconAbove, float scaler) {
 		GameObject specialCopy = null;
-		specialCopy = Instantiate (Instance.specialIndicator, Vector3.up * (iconAbove + (scaler / 4)) + goTransform.position, goTransform.rotation) as GameObject;
+		Vector3 specialCopyPosition = Vector3.up * (iconAbove + (scaler / 4)) + goTransform.position.x * Vector3.right + goTransform.position.z * Vector3.forward;
+		specialCopy = Instantiate (Instance.specialIndicator, specialCopyPosition, goTransform.rotation) as GameObject;
 		specialCopy.transform.GetChild (0).gameObject.GetComponent<MeshRenderer> ().material = specialIconMat;
 		specialCopy.transform.parent = goTransform;
 		specialCopy.transform.localScale *= scaler;

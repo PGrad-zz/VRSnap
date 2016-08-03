@@ -9,7 +9,8 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 	public GameObject clone,
 					  HUDPanel;
 	private bool gazeEnteredOnce = false,
-				 tookFirstShot = false;
+				 tookFirstShot = false,
+				 familyCreated = false;
 	private Animator anim;
 	private GameObject parent;
 	private GameObject[] siblings;
@@ -77,7 +78,7 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 				Destroy (howToImage.gameObject);
 				anim.SetTrigger ("Success");
 				StartCoroutine (ChangeHUDColors (true));
-			} else {
+			} else if (familyCreated) {
 				anim.SetTrigger ("Success");
 				foreach (GameObject sibling in siblings)
 					sibling.GetComponent<Animator> ().SetTrigger ("Success");
@@ -90,7 +91,7 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 		Quaternion turnAround = Quaternion.Euler (new Vector3 (0, 180f, 0));
 		parent = Instantiate (new GameObject (), transform.position, transform.rotation) as GameObject;
 		transform.parent = parent.transform;
-		gameObject.AddComponent<FamilySentinel> ();
+		gameObject.AddComponent<FamilySentinel> ().lead = true;
 		for (int sibling = 0; sibling < 2; sibling++) {
 			siblings [sibling] = ((GameObject) Instantiate (clone, transform.position + xShift, Quaternion.identity));
 			siblings [sibling].transform.rotation = turnAround * siblings [sibling].transform.rotation;
@@ -102,5 +103,6 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 		parent.AddComponent <Family> ();
 		CameraReticle.shotsEnabled = true;
 		fadeInHUDPanel ();
+		familyCreated = true;
 	}
 }

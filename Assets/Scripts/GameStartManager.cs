@@ -4,6 +4,7 @@ using System.Collections;
 
 public class GameStartManager : MonoBehaviour, IGvrGazeResponder {
 	private static bool gameStarted = false;
+
 	public void startLevel() {
 		CameraReticle.shotsEnabled = true;
 		GameObject.Find ("CameraReticle").GetComponent<CameraReticle> ().OnGazeExit (null, null);

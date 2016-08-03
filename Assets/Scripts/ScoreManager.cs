@@ -7,7 +7,7 @@ using System.Linq;
 
 public class ScoreManager : Singleton<ScoreManager> {
 	public int specials = 0,
-			   maxSpecials = 100;
+			   maxSpecials = 5;
 	public Text scoreText;
 	public GameObject HUDPanel,
 					  TutorialPanel,
@@ -27,7 +27,7 @@ public class ScoreManager : Singleton<ScoreManager> {
 		immediateScoreText = immediateScorePanel.GetComponentInChildren <Text> ();
 		EventManager.RegisterEvent ("StartPlayerMove", () => {
 			specials = 0;
-			maxSpecials = 3;
+			maxSpecials = 5;
 			RefreshHUD ();
 		});
 	}
