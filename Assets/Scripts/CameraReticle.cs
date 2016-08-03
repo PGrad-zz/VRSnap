@@ -29,6 +29,10 @@ using System.Collections.Generic;
 public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public static Dictionary<GameObject,bool> mapGOtoFacing;
 	public static bool shotsEnabled = false;
+	public Transform headTransform;
+	public GameObject headCanvas,
+					  pictureFrame,
+				      pointsPanel;
 	//Reference to CameraShot sibling component
 	private CameraShot cameraShot;
 
@@ -41,13 +45,9 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	// Private members
 	private Material materialComp,
 					 focusComp;
-	private GameObject targetObj,
-					   headCanvas,
-					   pointsPanel,
-					   pictureFrame;
+	private GameObject targetObj;
 	private AudioSource snapshot,
 						focusSound;
-	private Transform headTransform;
 	private Vector3 targetLocalPosition;
 
 	// Current inner angle of the reticle (in degrees).
@@ -98,16 +98,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 
 		focusSound = gameObject.GetComponents<AudioSource> () [1];
 
-		headTransform = GameObject.Find ("PlayerHead").GetComponent<GvrHead> ().transform;
-
 		mapGOtoFacing = new Dictionary<GameObject,bool> ();
-
-		headCanvas = GameObject.Find("HeadCanvas");
-
-		if (headCanvas != null) {
-			pictureFrame = headCanvas.transform.GetChild (0).gameObject;
-			pointsPanel = headCanvas.transform.GetChild (1).gameObject;
-		}
 	}
 
 	void OnEnable() {

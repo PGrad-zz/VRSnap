@@ -49,7 +49,7 @@ public class IguanaCharacter : SpecialMoment, IMover {
 
 	public void multiplyOnAttack () {
 		if (attacking) {
-			ScoreManager.MultiplyScore (2);
+			ScoreManager.AddSpecial ();
 			SpecialIsInvoked ();
 		}
 	}

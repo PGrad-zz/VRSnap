@@ -4,21 +4,16 @@ using System.Collections;
 public class PauseOnTilt : Singleton <PauseOnTilt> {
 	public GameObject PausePanel;
 	public static bool gameOver = false;
-	private GameObject startButton;
 	private readonly float tiltLimit = Mathf.Cos (Mathf.PI / 3);
 	private bool tilted = false,
 				 paused = false;
 	private float cosOfplayerHeadZAngle;
 
-	void Start () {
-		startButton = GameObject.Find ("StartButton");
-	}
-
 	void Update () {
 		cosOfplayerHeadZAngle = Mathf.Cos (transform.eulerAngles.z * Mathf.PI / 180);
 		if (!tilted && cosOfplayerHeadZAngle < tiltLimit) {
 			tilted = true;
-			if (!gameOver) {
+			if (!gameOver && GameStartManager.isGameStarted ()) {
 				if (!paused) 
 					PauseGame ();
 				else 
@@ -30,26 +25,23 @@ public class PauseOnTilt : Singleton <PauseOnTilt> {
 	}
 
 	void OnApplicationPause (bool paused) {
-		if (paused)
+		if (paused && GameStartManager.isGameStarted ())
 			PauseGame ();
 	}
 
 	public static void PauseGame () {
-		ScoreManager.PauseGame ();
 		Instance.PausePanel.SetActive (true);
-		if (Instance.startButton != null)
-			Instance.startButton.SetActive (false);
 		EventManager.TriggerEvent ("Pause");
+		if (GameStartManager.isGameStarted ())
+			ScoreManager.PauseGame ();
 		Instance.paused = true;
 	}
 
 	public static void ResumeGame () {
 		Instance.PausePanel.SetActive (false);
-		if (Instance.startButton != null)
-			Instance.startButton.SetActive (true);
-		else
-			ScoreManager.ResumeGame ();
 		EventManager.TriggerEvent ("Resume");
+		if (GameStartManager.isGameStarted ())
+			ScoreManager.ResumeGame ();
 		Instance.paused = false;
 	}
 }

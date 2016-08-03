@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour, IMover {
 	// Use this for initialization
 	void Start () {
 		nvAgent = GetComponent<NavMeshAgent> ();
-		EventManager.RegisterEvent ("Start", startMoving);
+		EventManager.RegisterEvent ("StartPlayerMove", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 	}
@@ -22,9 +22,7 @@ public class PlayerMovement : MonoBehaviour, IMover {
 	}
 
 	public void startMoving () {
-		terrainBounds = GameObject.FindGameObjectWithTag ("Level").GetComponent<Terrain> ().terrainData.size;
-		terrainBounds.x /= 2;
-		getMoving ();
+		moving = true;
 		StartCoroutine (rampUpSpeed ());
 	}
 

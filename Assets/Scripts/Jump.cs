@@ -45,7 +45,7 @@ public class Jump : SpecialMoment {
 	}
 
 	public void catchIt () {
-		ScoreManager.MultiplyScore (2);
+		ScoreManager.AddSpecial ();
 		SpecialIsInvoked ();
 	}
 }

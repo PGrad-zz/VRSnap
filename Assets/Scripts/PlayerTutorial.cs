@@ -1,21 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using UnityEngine.UI;
 
 public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
-	public Image rollPanel,
-				 scorePanel,
-				 howToImage,
+	public Image howToImage,
 				 pointToFrame;
-	public GameObject clone;
+	public GameObject clone,
+					  HUDPanel;
 	private bool gazeEnteredOnce = false,
 				 tookFirstShot = false;
 	private Animator anim;
+	private GameObject parent;
 	private GameObject[] siblings;
+	private Graphic[] HUDgraphics;
 
 	void Awake () {
 		anim = GetComponent<Animator> ();
 		siblings = new GameObject[2];
+	}
+
+	void Start () {
+		EventManager.RegisterEvent ("StartPlayerMove", () => Destroy (parent));
+		HUDgraphics = HUDPanel.GetComponentsInChildren<Graphic> ().Union (HUDPanel.GetComponents<Graphic> ()).ToArray ();
+		hideHUDPanel ();
+	}
+
+	void hideHUDPanel () {
+		foreach (Graphic graphic in HUDgraphics)
+			graphic.enabled = false;
+	}
+
+	void fadeInHUDPanel () {
+		foreach (Graphic graphic in HUDgraphics) {
+			graphic.enabled = true;
+			graphic.CrossFadeAlpha (0.1f, 0f, true);
+			graphic.CrossFadeAlpha (1f, 1f, true);
+		}
 	}
 
 	public void OnGazeEnter () {
@@ -27,29 +48,19 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 
 	private IEnumerator ChangeHUDColors (bool waitForShot) {
 		if (waitForShot) {
-			yield return new WaitForSeconds (1);
-			CameraReticle.shotsEnabled = false;
-		}
-		scorePanel.CrossFadeAlpha (255f, 1f, true);
-		yield return new WaitForSeconds (1);
-		rollPanel.CrossFadeAlpha (255f, 1f, true);
-		yield return new WaitForSeconds (2);
-		if (!waitForShot) {
-			howToImage.CrossFadeAlpha (255f, 1f, true);
-			yield return new WaitForSeconds (1);
-			CameraReticle.shotsEnabled = true;
-		}
-		else {
-			scorePanel.CrossFadeAlpha (1f, 1f, true);
-			yield return new WaitForSeconds (1);
-			rollPanel.CrossFadeAlpha (1f, 1f, true);
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (2);
 			pointToFrame.CrossFadeAlpha (255f, 1f, true);
 			yield return new WaitForSeconds (3);
 			pointToFrame.CrossFadeAlpha (1f, 1f, true);
 			yield return new WaitForSeconds (1);
+			CameraReticle.shotsEnabled = false;
 			Destroy (pointToFrame.gameObject);
 			SpawnSiblings ();
+		} else {
+			yield return new WaitForSeconds (1);
+			howToImage.CrossFadeAlpha (255f, 1f, true);
+			yield return new WaitForSeconds (1);
+			CameraReticle.shotsEnabled = true;
 		}
 	}
 
@@ -77,7 +88,7 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 	private void SpawnSiblings () {
 		Vector3 xShift = new Vector3 (2, 0, 0);
 		Quaternion turnAround = Quaternion.Euler (new Vector3 (0, 180f, 0));
-		GameObject parent = Instantiate (new GameObject (), transform.position, transform.rotation) as GameObject;
+		parent = Instantiate (new GameObject (), transform.position, transform.rotation) as GameObject;
 		transform.parent = parent.transform;
 		gameObject.AddComponent<FamilySentinel> ();
 		for (int sibling = 0; sibling < 2; sibling++) {
@@ -90,5 +101,6 @@ public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
 		}
 		parent.AddComponent <Family> ();
 		CameraReticle.shotsEnabled = true;
+		fadeInHUDPanel ();
 	}
 }

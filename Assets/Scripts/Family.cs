@@ -40,7 +40,7 @@ public class Family : SpecialMoment {
 				totalHits++;
 		}
 		if (totalHits == countMembers.Count) {
-			ScoreManager.MultiplyScore (2);
+			ScoreManager.AddSpecial ();
 			BroadcastMessage ("SpecialIsInvoked");
 		}
 		BroadcastMessage ("Searched");
