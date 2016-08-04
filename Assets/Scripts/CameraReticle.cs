@@ -214,13 +214,15 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	}
 
 	private void RestoreScreen () {
-		if (headCanvas != null) {
-			headCanvas.SetActive (true);
-			pictureFrame.SetActive (true);
-		}
-		EventManager.TriggerEvent ("Resume");
-		if (GameStartManager.isGameStarted ())
-			CameraReticle.shotsEnabled = true;
+		//if (PauseOnTilt.testTiltPause) {
+			if (headCanvas != null) {
+				headCanvas.SetActive (true);
+				pictureFrame.SetActive (true);
+			}
+			EventManager.TriggerEvent ("Resume");
+			if (GameStartManager.isGameStarted ())
+				CameraReticle.shotsEnabled = true;
+		//}
 	}
 
 	private IEnumerator resizeDown() {

@@ -91,8 +91,10 @@ public class ScoreManager : Singleton<ScoreManager> {
 		Instance.scoreText.text = string.Format ("{0}/{1}", Instance.specials.ToString(), Instance.maxSpecials);
 		if (!Instance.firstTutorialShot)
 			Instance.StartCoroutine (ShowImmediateScore (Instance.specialsInPic));
-		else
+		else {
 			Instance.firstTutorialShot = false;
+			PauseOnTilt.occupied = true;
+		}
 		ResetPicScore ();
 	}
 

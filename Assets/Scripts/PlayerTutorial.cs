@@ -4,7 +4,8 @@ using System.Linq;
 using UnityEngine.UI;
 
 public class PlayerTutorial : MonoBehaviour, IGvrGazeResponder {
-	public Image howToImage,
+	public Image howToPause,
+				 howToImage,
 				 pointToFrame;
 	public GameObject clone,
 					  HUDPanel;

@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour, IMover {
 	public IEnumerator rampUpSpeed () {
 		while (nvAgent.speed < maxSpeed) {
 			yield return new WaitForSeconds (0.1f);
-			nvAgent.speed += 0.2f;
+			nvAgent.speed += 0.1f;
 		}
 	}
 

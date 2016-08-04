@@ -14,5 +14,6 @@ public class RhinoDrama : SpecialMoment {
 
 	public void Capture () {
 		ScoreManager.AddSpecial ();
+		SpecialIsInvoked ();
 	}
 }

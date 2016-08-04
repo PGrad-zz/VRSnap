@@ -11,6 +11,7 @@ public class GameStartManager : MonoBehaviour, IGvrGazeResponder {
 		EventManager.TriggerEvent ("StartPlayerMove");
 		Destroy (transform.parent.gameObject);
 		gameStarted = true;
+		PauseOnTilt.occupied = false;
 	}
 
 	public static bool isGameStarted () {
