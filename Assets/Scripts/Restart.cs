@@ -13,8 +13,10 @@ public class Restart : MonoBehaviour, IGvrGazeResponder, IPointerUpHandler  {
 	public void RestartGame () {
 		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 		PauseOnTilt.gameOver = false;
+		GameStartManager.GameRestarted ();
 		camShot.ClearFrame ();
 		PauseOnTilt.ResumeGame ();
+		//PauseOnTilt.testTiltPause = false;
 	}
 
 	public void OnGazeTrigger () {

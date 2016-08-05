@@ -2,30 +2,33 @@
 using System.Collections;
 
 public class PauseOnTilt : Singleton <PauseOnTilt> {
-	public GameObject PausePanel;
-	public static bool gameOver = false;
-	private GameObject startButton;
-	private readonly float tiltLimit = Mathf.Cos (Mathf.PI / 3);
-	private bool tilted = false,
+	public GameObject PausePanel,
+					  TiltInstruction,
+					  Monkey,
+					  Frame;
+	public static bool gameOver = false,
+					   occupied = false,
+					   testTiltPause = false;
+	private readonly float tiltLimit = Mathf.Cos (Mathf.PI / 4);
+	private bool monkeyMoved = false,
+				 tilted = false,
 				 paused = false;
 	private float cosOfplayerHeadZAngle;
-	private GameObject jeep;
-
-	void Start () {
-		jeep = GameObject.Find ("jeepus");
-		transform.forward = jeep.transform.forward;
-		startButton = GameObject.Find ("StartButton");
-	}
 
 	void Update () {
 		cosOfplayerHeadZAngle = Mathf.Cos (transform.eulerAngles.z * Mathf.PI / 180);
 		if (!tilted && cosOfplayerHeadZAngle < tiltLimit) {
 			tilted = true;
 			if (!gameOver) {
-				if (!paused) 
+				if (!paused) {
+					if (!testTiltPause) {
+						Destroy (Instance.TiltInstruction);
+						testTiltPause = true;
+					}
 					PauseGame ();
-				else 
+				} else {
 					ResumeGame ();
+				}
 			}
 		}
 		if (tilted && cosOfplayerHeadZAngle > tiltLimit) 
@@ -38,19 +41,27 @@ public class PauseOnTilt : Singleton <PauseOnTilt> {
 	}
 
 	public static void PauseGame () {
-		ScoreManager.PauseGame ();
-		Instance.PausePanel.SetActive (true);
-		if (Instance.startButton != null)
-			Instance.startButton.SetActive (false);
-		Instance.paused = true;
+		if (!occupied) {
+			Instance.PausePanel.SetActive (true);
+			EventManager.TriggerEvent ("Pause");
+			if (GameStartManager.isGameStarted ())
+				ScoreManager.PauseGame ();
+			Instance.paused = true;
+		}
 	}
 
 	public static void ResumeGame () {
-		Instance.PausePanel.SetActive (false);
-		if (Instance.startButton != null)
-			Instance.startButton.SetActive (true);
-		else
-			ScoreManager.ResumeGame ();
-		Instance.paused = false;
+		if (!occupied) {
+			/*if (testTiltPause && !Instance.monkeyMoved) {
+				Instance.Monkey.transform.Translate (Vector3.up * 4.74f);
+				Instance.Frame.SetActive (true);
+				Instance.monkeyMoved = true;
+			}*/
+			Instance.PausePanel.SetActive (false);
+			EventManager.TriggerEvent ("Resume");
+			if (GameStartManager.isGameStarted ())
+				ScoreManager.ResumeGame ();
+			Instance.paused = false;
+		}
 	}
 }

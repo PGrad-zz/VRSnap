@@ -8,28 +8,23 @@ public class Jump : SpecialMoment {
 
 	void Awake () {
 		rb = GetComponent<Rigidbody> ();
-		mCollider = gameObject.GetComponent<MeshCollider> ();
-		mCollider.enabled = false;
+		specialIconMaterial = (Material) Resources.Load ("SpecialIconMaterial/TimeMaterial");
 	}
 
 	void Start () {
-		EventManager.RegisterGameobject (gameObject, catchIt);
+		base.RegisterAndScale ();
+		EventManager.RegisterGameObject (gameObject, catchIt);
 	}
 
 	public void OnTriggerEnter (Collider other) {
 		if (!jumped && other.name == "Player") {
-			transform.parent = other.transform;
 			ShowSpecial ();
+			transform.parent = other.transform;
+			jumpIn ();
 		}
 	}
 
-	protected override void ShowSpecial () {
-		base.ShowSpecial ();
-		jumpIn ();
-	}
-
 	private void jumpIn () {
-		gameObject.GetComponent<MeshCollider> ().enabled = true;
 		gameObject.GetComponent<Rigidbody> ().useGravity = true;
 		rb.AddForce (Vector3.right * 300 + Vector3.up * 100 + Vector3.forward * -500);
 		jumped = true;
@@ -40,12 +35,8 @@ public class Jump : SpecialMoment {
 		yield return new WaitForSeconds (1.0f);
 		GetComponents<AudioSource> () [0].Play ();
 		yield return new WaitForSeconds (3.0f);
-		HideSpecial ();
-	}
-
-	protected override void HideSpecial () {
 		jumpOut ();
-		base.HideSpecial ();
+		HideSpecial ();
 	}
 
 	private void jumpOut () {
@@ -54,6 +45,7 @@ public class Jump : SpecialMoment {
 	}
 
 	public void catchIt () {
-		ScoreManager.MultiplyScore (2);
+		ScoreManager.AddSpecial ();
+		SpecialIsInvoked ();
 	}
 }

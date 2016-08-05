@@ -7,6 +7,7 @@ public class Popup : MonoBehaviour, IGvrGazeResponder {
 	bool runOnce = false,
 		 dropped = true;
 	int yTranslate;
+	public Animator anim;
 
 	void Start() {
 		yTranslate = 10;

@@ -29,6 +29,10 @@ using System.Collections.Generic;
 public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public static Dictionary<GameObject,bool> mapGOtoFacing;
 	public static bool shotsEnabled = false;
+	public Transform headTransform;
+	public GameObject headCanvas,
+					  pictureFrame,
+				      pointsPanel;
 	//Reference to CameraShot sibling component
 	private CameraShot cameraShot;
 
@@ -41,13 +45,9 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	// Private members
 	private Material materialComp,
 					 focusComp;
-	private GameObject targetObj,
-					   headCanvas,
-					   pointsPanel,
-					   pictureFrame;
+	private GameObject targetObj;
 	private AudioSource snapshot,
 						focusSound;
-	private Transform headTransform;
 	private Vector3 targetLocalPosition;
 
 	// Current inner angle of the reticle (in degrees).
@@ -98,15 +98,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 
 		focusSound = gameObject.GetComponents<AudioSource> () [1];
 
-		headTransform = GameObject.Find ("PlayerHead").GetComponent<GvrHead> ().transform;
-
 		mapGOtoFacing = new Dictionary<GameObject,bool> ();
-
-		headCanvas = GameObject.Find("HeadCanvas");
-
-		pointsPanel = headCanvas.transform.GetChild (1).gameObject;
-
-		pictureFrame = GameObject.Find ("Frame");
 	}
 
 	void OnEnable() {
@@ -147,7 +139,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 			Collider targetCollider = targetObject.GetComponent<Collider> ();
 			colliderMultiplier = (int) (targetCollider.bounds.size.y * targetCollider.transform.localScale.y);
 		}*/
-		SetGazeTarget(intersectionPosition, isInteractiveAndIsNotNull);
+		SetGazeTarget(intersectionPosition, EventManager.isPhotogenic (targetObj));
 	}
 
 	/// Called every frame the user is still looking at a valid GameObject. This
@@ -181,19 +173,9 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public void OnGazeTriggerStart(Camera camera) {
 		// Put your reticle trigger start logic here :)
 		//Check to make sure targetObj still exists
-		isInteractiveAndIsNotNull &= targetObj != null;
-		if(isInteractiveAndIsNotNull && targetObj.name != "Text") {
-			if (targetObj.name == "Gelios_high") {
-				canZoom = true;
-				Debug.Log ("zoom!");
-			} else {
-				kReticleGrowthAngle = kReticleGrowthAngle * 10f/*** colliderMultiplier*/;
-				focusSound.Play ();
-				if (canZoom) {
-					zoomIn = true;
-					StartCoroutine (zoom (camera.GetComponentsInChildren<Camera> ()));
-				}
-			}
+		if(EventManager.isPhotogenic (targetObj)) {
+			kReticleGrowthAngle = kReticleGrowthAngle * 10f/*** colliderMultiplier*/;
+			focusSound.Play ();
 		}
 	}
 
@@ -212,8 +194,8 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	public void OnGazeTriggerEnd(Camera camera) {
 		// Put your reticle trigger end logic here :)
 		//Check to make sure targetObj still exists
-		isInteractiveAndIsNotNull &= targetObj != null;
-		if (shotsEnabled && isInteractiveAndIsNotNull && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.3f) {
+		//isInteractiveAndIsNotNull &= targetObj != null;
+		if (shotsEnabled && EventManager.isPhotogenic(targetObj) && materialComp.GetFloat ("_InnerDiameter") > 0.3f) {
 			ClearScreen ();
 			snapshot.Play ();
 			cameraShot.TakeCameraShot (materialComp.GetFloat ("_OuterDiameter") - materialComp.GetFloat ("_InnerDiameter"));
@@ -223,14 +205,24 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 	}
 
 	private void ClearScreen () {
-		headCanvas.SetActive (false);
-		pointsPanel.SetActive (false);
-		pictureFrame.SetActive (false);
+		EventManager.TriggerEvent ("Pause");
+		if (headCanvas != null) {
+			headCanvas.SetActive (false);
+			pointsPanel.SetActive (false);
+			pictureFrame.SetActive (false);
+		}
 	}
 
 	private void RestoreScreen () {
-		headCanvas.SetActive (true);
-		pictureFrame.SetActive (true);
+		//if (PauseOnTilt.testTiltPause) {
+			if (headCanvas != null) {
+				headCanvas.SetActive (true);
+				pictureFrame.SetActive (true);
+			}
+			EventManager.TriggerEvent ("Resume");
+			if (GameStartManager.isGameStarted ())
+				CameraReticle.shotsEnabled = true;
+		//}
 	}
 
 	private IEnumerator resizeDown() {
@@ -239,7 +231,6 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 		yield return new WaitForSeconds (0.25f);
 		kReticleGrowthAngle = 1.5f;
 		RestoreScreen ();
-		shotsEnabled = true;
 	}
 
 	public void GetPointerRadius(out float innerRadius, out float outerRadius) {
@@ -376,7 +367,7 @@ public class CameraReticle : MonoBehaviour, IGvrGazePointer {
 				direction = forward;
 		int zSteps = Mathf.FloorToInt (360f / inverseResolution),
 			ySteps = 50;
-		Quaternion yRotation = Quaternion.Euler(up * (reticleInnerAngle / 75)),
+		Quaternion yRotation = Quaternion.Euler(up * (reticleInnerAngle / 70)),
 		zRotation = Quaternion.Euler(forward * inverseResolution);
 		for(int z = 0; z < ySteps; z++) {
 			direction = yRotation * direction;

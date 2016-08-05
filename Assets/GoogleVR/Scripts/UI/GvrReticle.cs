@@ -152,11 +152,12 @@ public class GvrReticle : MonoBehaviour, IGvrGazePointer {
     Vector3[] vertices = new Vector3[vertex_count];
 
     const float kTwoPi = Mathf.PI * 2.0f;
+	const float adjustAngle = Mathf.PI / 4; 
     int vi = 0;
     for (int si = 0; si <= segments_count; ++si) {
       // Add two vertices for every circle segment: one at the beginning of the
       // prism, and one at the end of the prism.
-      float angle = (float)si / (float)(segments_count) * kTwoPi;
+	  float angle = (float)si / (float)(segments_count) * kTwoPi + adjustAngle;
 
       float x = Mathf.Sin(angle);
       float y = Mathf.Cos(angle);

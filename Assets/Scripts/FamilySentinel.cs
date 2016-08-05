@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FamilySentinel : MonoBehaviour {
-	public bool notSearched = true;
+public class FamilySentinel : MonoBehaviour, ISpecialInvoked {
+	public bool notSearched = true,
+				lead = false;
 	void Start () {
-		EventManager.RegisterGameobject (gameObject, Alert);
+		EventManager.RegisterGameObject (gameObject, Alert);
 	}
 
 	public void Alert () {
@@ -18,5 +19,9 @@ public class FamilySentinel : MonoBehaviour {
 
 	public void Open () {
 		notSearched = true;
+	}
+
+	public void SpecialIsInvoked () {
+		EventManager.NowInvoked (gameObject);
 	}
 }

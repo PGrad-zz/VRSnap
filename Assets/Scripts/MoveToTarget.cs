@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MoveToTarget : MonoBehaviour, Mover {
+public class MoveToTarget : MonoBehaviour, IMover {
 	public GameObject target;
 	private bool moving = false,
 				 stopped = false,

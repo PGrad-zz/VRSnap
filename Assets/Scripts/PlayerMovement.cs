@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovement : MonoBehaviour, Mover {
+public class PlayerMovement : MonoBehaviour, IMover {
 	public GameObject target;
+	public float maxSpeed;
 	private NavMeshAgent nvAgent;
 	private bool moving = false;
 	private Vector3 terrainBounds;
@@ -10,7 +11,7 @@ public class PlayerMovement : MonoBehaviour, Mover {
 	// Use this for initialization
 	void Start () {
 		nvAgent = GetComponent<NavMeshAgent> ();
-		EventManager.RegisterEvent ("Start", startMoving);
+		EventManager.RegisterEvent ("StartPlayerMove", startMoving);
 		EventManager.RegisterEvent ("Move", getMoving);
 		EventManager.RegisterEvent ("Stop", stopMoving);
 	}
@@ -21,9 +22,15 @@ public class PlayerMovement : MonoBehaviour, Mover {
 	}
 
 	public void startMoving () {
-		terrainBounds = GameObject.FindGameObjectWithTag ("Level").GetComponent<Terrain> ().terrainData.size;
-		terrainBounds.x /= 2;
-		getMoving ();
+		moving = true;
+		StartCoroutine (rampUpSpeed ());
+	}
+
+	public IEnumerator rampUpSpeed () {
+		while (nvAgent.speed < maxSpeed) {
+			yield return new WaitForSeconds (0.1f);
+			nvAgent.speed += 0.1f;
+		}
 	}
 
 	public void getMoving () {
